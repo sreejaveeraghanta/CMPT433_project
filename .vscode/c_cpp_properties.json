@@ -1,0 +1,21 @@
+{
+    "configurations": [
+        {
+            "name": "Linux",
+            "includePath": [
+                "${workspaceFolder}/**",
+                "~/powervr/framework/**",
+                "~/powervr/include/**",
+                "~/powervr/external/glm/**",
+                "~/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/source",
+                "~/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/source/kernel/**",
+                "~/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/source/kernel/freertos/portable/TI_ARM_CLANG/ARM_CR5F",
+                "~/ti/ti-processor-sdk-rtos-j722s-evm-10_01_00_04/mcu_plus_sdk_j722s_10_01_00_22/source/kernel/freertos/config/j722s/r5f/**",
+                "~/ti/ti-cgt-c7000_4.1.0.LTS/include/**"
+            ],
+            "defines": ["_BSD_SOURCE", "DEBUG", "SOC_J722S"],
+            "compilerPath": "/usr/bin/aarch64-linux-gnu-g++"
+        }
+    ],
+    "version": 4
+}

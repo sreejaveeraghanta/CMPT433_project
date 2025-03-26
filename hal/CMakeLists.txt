@@ -1,10 +1,20 @@
-# CMakeList.txt for HAL
-#   Build a library (`hal`) which exposes the header files as "hal/*.h"
-#   Use header as: #include "hal/button.h"
+set(SRC_FILES
+   src/gpiorw.c
+   src/gpio.c
+   src/i2c.c
+   src/joystick.c
+   src/lcd.c
+   src/r5f.c
+   src/spi.c
+   src/pwm.c
+)
 
-include_directories(hal/include)
-file(GLOB MY_SOURCES "src/*.c")
-
-add_library(hal STATIC ${MY_SOURCES})
+add_library(hal STATIC ${SRC_FILES})
 
 target_include_directories(hal PUBLIC include)
+
+target_compile_options(hal PRIVATE -Wall -Wextra -Wpedantic)
+
+target_link_libraries(
+    hal LINK_PRIVATE ti_rpmsg_char util gpiod
+)

@@ -1,0 +1,15 @@
+{
+    "files.associations": {
+        "spi.h": "c",
+        "fcntl.h": "c",
+        "stdint.h": "c",
+        "mman.h": "c",
+        "algorithm": "cpp",
+        "random": "cpp",
+        "__locale": "cpp",
+        "locale": "cpp",
+        "thread": "cpp",
+        "numbers": "cpp",
+        "joystick.h": "c"
+    }
+}
