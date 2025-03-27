@@ -1,3 +1,5 @@
+UPDATE: Obsolete, we can use [BYAI-mcu_spi0](https://github.com/wcs3/BYAI-mcu_spi0) instead, it is a bit faster R5F. This repo still helpful as a reference for R5F setup.
+
 Modified from Olof Astrand's hello_beagley repo
 https://github.com/Ebiroll/hello_beagley/tree/main
 

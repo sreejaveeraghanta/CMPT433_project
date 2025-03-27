@@ -136,8 +136,7 @@ pvr::Result PongShell::renderFrame()
 	gl::ReadPixels(0, 0, LCD_WIDTH, LCD_HEIGHT, colorFormat, colorType, m_readPixBuf.get());
 
 	// Convert read pixels to a format that can be sent to LCD
-    convertRGBAtoRGB565(m_readPixBuf.get(), static_cast<uint16_t*>(LCD_getFrameBufferAddress()), LCD_WIDTH, LCD_HEIGHT);
-	swapShortByteOrder(static_cast<uint16_t*>(LCD_getFrameBufferAddress()), LCD_WIDTH, LCD_HEIGHT);
+    convertRGBAtoRGB565(m_readPixBuf.get(), reinterpret_cast<uint16_t*>(LCD_getFrameBuffer()), LCD_WIDTH, LCD_HEIGHT);
 
 	// Display frame buffer on the LCD
 	LCD_displayFrame();

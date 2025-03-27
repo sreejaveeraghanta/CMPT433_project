@@ -549,8 +549,7 @@ bool renderScene(GLuint shaderProgram, EGLDisplay eglDisplay, EGLSurface eglSurf
     struct timespec ts_end;
 
     clock_gettime(CLOCK_MONOTONIC, &ts_cur);
-    convertRGBAtoRGB565((uint8_t*)pointer, (uint16_t*)LCD_getFrameBufferAddress(), 240, 240);
-	swapShortByteOrder((uint16_t*)LCD_getFrameBufferAddress(), 240, 240);
+    convertRGBAtoRGB565((uint8_t*)pointer, (uint16_t*)LCD_getFrameBuffer(), 240, 240);
     clock_gettime(CLOCK_MONOTONIC, &ts_end);
 
     long usec = (ts_end.tv_sec - ts_cur.tv_sec) * 1000000L + (ts_end.tv_nsec - ts_cur.tv_nsec) / 1000L;

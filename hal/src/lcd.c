@@ -11,6 +11,7 @@
 #include <sys/mman.h>
 #include <fcntl.h>
 #include <unistd.h>
+#include <stdlib.h>
 
 // DC high = send data, low = send command
 #define MODE_DATA    1
@@ -26,8 +27,6 @@
 #define BL_LINE_NUM  18 // GPIO13 CHIP1
 #define BACKLIGHT_GPIO 13
 
-#define FRAME_BUFFER_PHYS_ADDR 0xA1100000
-
 static int s_gpioChipFd0 = 0;
 static int s_gpioChipFd1 = 0;
 static int s_gpioLineFdDc = 0;
@@ -37,7 +36,7 @@ static int s_gpioLineFdRst = 0;
 static int s_dcMode = -1;
 static bool s_isInited = false;
 
-static void* s_fbVirtAddr;
+static uint8_t* s_frameBuffer;
 
 static void setPin(int lineFd, int value)
 {
@@ -50,8 +49,7 @@ static void sendCommand(uint8_t command)
         setPin(s_gpioLineFdDc, MODE_COMMAND);
         s_dcMode = MODE_COMMAND;
     }
-    // SPI_sendData(command, 1);
-    SPI_sendData(&command, 1);
+    SPI_sendBytes(&command, 1);
 }
 
 static void sendByte(uint8_t data)
@@ -60,8 +58,7 @@ static void sendByte(uint8_t data)
         setPin(s_gpioLineFdDc, MODE_DATA);
         s_dcMode = MODE_DATA;
     }
-    // SPI_sendData(data, 1);
-    SPI_sendData(&data, 1);
+    SPI_sendBytes(&data, 1);
 }
 
 static void sendNBytes(uint8_t* buffer, int n)
@@ -70,35 +67,22 @@ static void sendNBytes(uint8_t* buffer, int n)
         setPin(s_gpioLineFdDc, MODE_DATA);
         s_dcMode = MODE_DATA;
     }
-    SPI_sendData(buffer, n);
+    SPI_sendBytes(buffer, n);
 }
 
 void LCD_init()
 {
     if (s_isInited) {
-        printf("LCD: module already inited\n");
+        perror("LCD: module already inited");
         return;
     }
 
-    // Open /dev/mem (requires root privileges)
-    int mem_fd = open("/dev/mem", O_RDWR | O_SYNC);
-    if (mem_fd < 0) {
-        perror("open /dev/mem failed");
+    // Allocate framebuffer
+    s_frameBuffer = (uint8_t*)malloc(LCD_FRAME_BUFFER_SIZE);
+    if (s_frameBuffer == NULL) {
+        perror("LCD: allocate framebuffer failed");
+        return;
     }
-
-    // Map the physical address to a virtual address
-    s_fbVirtAddr = mmap(NULL, LCD_FRAME_BUFFER_SIZE, PROT_READ | PROT_WRITE, MAP_SHARED, mem_fd, FRAME_BUFFER_PHYS_ADDR);
-    if (s_fbVirtAddr == MAP_FAILED) {
-        perror("mmap failed");
-        close(mem_fd);
-    }
-    
-    volatile uint8_t* addr = (volatile uint8_t*)s_fbVirtAddr;
-    for (int i = 0; i < LCD_HEIGHT * LCD_WIDTH * LCD_COLOR_BYTES; ++i) {
-        addr[i] = 0;
-    }
-    printf("Mapped physical address 0x%X to virtual address %p\n", FRAME_BUFFER_PHYS_ADDR, s_fbVirtAddr);
-    
     // IO init
     s_gpioChipFd0 = GPIORW_open(GPIO_CHIP_PATH_1); 
     s_gpioChipFd1 = GPIORW_open(GPIO_CHIP_PATH_2); 
@@ -235,28 +219,23 @@ void LCD_init()
 void LCD_displayFrame()
 {
     if (!s_isInited) {
-        printf("LCD: Can't send frame, module not inited");
+        perror("LCD: Can't send frame, module not inited");
     }
     
     // x range and y range was set in init, assume not changed
-
+    // LCD_displayFrameInterlace();
     sendCommand(COMMAND_RAMWR);
     if (s_dcMode != MODE_DATA) {
         setPin(s_gpioLineFdDc, MODE_DATA);
         s_dcMode = MODE_DATA;
     }
-    SPI_notifyFrameReady();
-}
-
-void* LCD_getFrameBufferAddress()
-{
-    return s_fbVirtAddr;
+    SPI_sendWords((uint32_t*)s_frameBuffer, LCD_FRAME_BUFFER_SIZE);
 }
 
 void LCD_displayFrameInterlace()
 {
     if (!s_isInited) {
-        printf("LCD: Can't send frame interalced, module not inited");
+        perror("LCD: Can't send frame interalced, module not inited");
         return;
     }
     // Decide to send odd or even line
@@ -283,7 +262,7 @@ void LCD_displayFrameInterlace()
             setPin(s_gpioLineFdDc, MODE_DATA);
             s_dcMode = MODE_DATA;
         }
-        SPI_notifyLineReady(i);
+        SPI_sendWords((uint32_t*)(s_frameBuffer + i*LCD_WIDTH*LCD_COLOR_BYTES), LCD_WIDTH*LCD_COLOR_BYTES);
     }
     sf_isSendOdd = !sf_isSendOdd;
 }
@@ -294,6 +273,11 @@ void LCD_command(uint8_t command, uint8_t* param, int len)
     sendNBytes(param, len);
 }
 
+uint8_t* LCD_getFrameBuffer()
+{
+    return s_frameBuffer;
+}
+
 // void LCD_setBrightness(int percent)
 // {
 //     PWM_setPower(percent);
@@ -302,11 +286,9 @@ void LCD_command(uint8_t command, uint8_t* param, int len)
 void LCD_deinit()
 {
     if (!s_isInited) {
-        printf("LCD: can't deinit, module not yet inited\n");
+        perror("LCD: can't deinit, module not yet inited");
         return;
     }
-    // munmap(s_memMap, PAGE_SIZE);
-    // close(s_memFd);
     SPI_deinit();
     GPIORW_close(s_gpioLineFdBl);
     GPIORW_close(s_gpioLineFdRst);
@@ -314,7 +296,7 @@ void LCD_deinit()
     GPIORW_close(s_gpioChipFd1);
     GPIORW_close(s_gpioChipFd0);
     // PWM_deinit();
-    
+    free(s_frameBuffer);
     s_isInited = false;
     printf("LCD deinited\n");
 }

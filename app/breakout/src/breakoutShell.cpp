@@ -9,8 +9,6 @@
 
 #include <iostream>
 
-static void joystickNOP(){}
-
 pvr::Result BreakoutShell::initApplication()
 {
     debugLog("initApplication");
@@ -57,9 +55,9 @@ pvr::Result BreakoutShell::initView()
 	{
         EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
         EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
-        EGL_BLUE_SIZE, 5,
+		EGL_RED_SIZE, 5,
         EGL_GREEN_SIZE, 6,
-        EGL_RED_SIZE, 5,
+        EGL_BLUE_SIZE, 5,
         EGL_ALPHA_SIZE, 8,
         EGL_DEPTH_SIZE, 8,
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT, EGL_NONE
@@ -137,8 +135,7 @@ pvr::Result BreakoutShell::renderFrame()
 	gl::ReadPixels(0, 0, LCD_WIDTH, LCD_HEIGHT, colorFormat, colorType, m_readPixBuf.get());
 
 	// Convert read pixels to a format that can be sent to LCD
-    convertRGBAtoRGB565(m_readPixBuf.get(), static_cast<uint16_t*>(LCD_getFrameBufferAddress()), LCD_WIDTH, LCD_HEIGHT);
-	swapShortByteOrder(static_cast<uint16_t*>(LCD_getFrameBufferAddress()), LCD_WIDTH, LCD_HEIGHT);
+    convertRGBAtoRGB565(m_readPixBuf.get(), reinterpret_cast<uint16_t*>(LCD_getFrameBuffer()), LCD_WIDTH, LCD_HEIGHT);
 
 	// Display frame buffer on the LCD
 	LCD_displayFrame();

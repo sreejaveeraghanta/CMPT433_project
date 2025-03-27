@@ -34,7 +34,7 @@ void flushFrameBufferCallback(lv_display_t * display, const lv_area_t * area, ui
     (void) display;
     (void) area;
     // Get the framebuffer address
-    memcpy(LCD_getFrameBufferAddress(), px_map, LCD_FRAME_BUFFER_SIZE);
+    memcpy(LCD_getFrameBuffer(), px_map, LCD_FRAME_BUFFER_SIZE);
     LCD_displayFrame();
     
     /* IMPORTANT!!!
@@ -79,6 +79,11 @@ static void rollerClickedHandler(lv_event_t * e)
         dir = "../breakout";
         executableName = "./breakout";
         argv0 = "breakout";
+    // pong
+    } else if (curIdx == 3) {
+        dir = "../pong";
+        executableName = "./pong";
+        argv0 = "pong";
     }
 
     // Deinit HAL before fork
@@ -139,6 +144,7 @@ void createRoller(void)
                           "pvrTriangle\n"
                           "pvrGnomeToy\n"
                           "breakout\n"
+                          "pong\n"
                           "Quit",
                           LV_ROLLER_MODE_INFINITE);
     lv_obj_add_style(s_roller, &style_sel, LV_PART_MAIN);

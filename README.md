@@ -13,7 +13,7 @@ git clone --recurse-submodules -j8 https://github.com/powervr-graphics/Native_SD
 ```
 Rename it to `powervr`: `mv ./Native_SDK/ ./powervr`
 
-4. Get the firmware and scripts, see [R5F README](r5f/README.md)
+4. Please follow the SPI setup in [BYAI-mcu_spi0](https://github.com/wcs3/BYAI-mcu_spi0), we will be using the default `/dev/spidev1.0`, so the change alias part can be skipped.
 
 # Build (Host)
 Select aarch64 kit in vscode
@@ -25,14 +25,9 @@ cmake --build .
 ```
 CMake will copy the files to target.
 # Run (Target)
-Boot R5F
-```bash
-cd /mnt/remote/myApps
-sudo ./uploadFirmwareAndStart.sh 2 r5f_spi_firmware.release.out
-```
 Run triangle
 ```bash
 cd pvrTriangle
 sudo ./pvrTriangle
 ```
-Also try breakout, pvrGnomeToy and helloLvgl. helloLvgl is a game launcher.
+Also try breakout, pvrGnomeToy and helloLvgl. helloLvgl is the game launcher.

@@ -209,9 +209,9 @@ pvr::Result OpenGLESIntroducingPVRUtils::initView()
 	{
         EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
         EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
-        EGL_BLUE_SIZE, 5,
+		EGL_RED_SIZE, 5,
         EGL_GREEN_SIZE, 6,
-        EGL_RED_SIZE, 5,
+        EGL_BLUE_SIZE, 5,
         EGL_ALPHA_SIZE, 8, // Need to keep >= 0 otherwise textures became white noise (why?)
         EGL_DEPTH_SIZE, 8, // For depth test, prioritize redering of objects closer to screen
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT, EGL_NONE
@@ -422,15 +422,6 @@ void convertRGBAtoRGB565(uint8_t *rgba, uint16_t *rgb565, int width, int height)
 
 }
 
-void swapShortByteOrder(uint16_t *rgb565, int width, int height)
-{
-	int numPixels = width * height;
-	// IMPORTANT, need to swap byte order of each uint16_t to before sending to LCD
-	for (int i = 0; i < numPixels; i++) {
-		rgb565[i] = ((rgb565[i] >> 8) & 0xFF) | ((rgb565[i] << 8) & 0xFF00);
-	}
-}
-
 void OpenGLESIntroducingPVRUtils::eventMappedInput(pvr::SimplifiedInput key)
 {
 	switch (key)
@@ -534,8 +525,7 @@ pvr::Result OpenGLESIntroducingPVRUtils::renderFrame()
 
 	// Frame data preparation
 	start = std::chrono::high_resolution_clock::now();
-    convertRGBAtoRGB565(_readPixelsBuffer.get(), static_cast<uint16_t*>(LCD_getFrameBufferAddress()), LCD_WIDTH, LCD_HEIGHT);
- 	swapShortByteOrder(static_cast<uint16_t*>(LCD_getFrameBufferAddress()), LCD_WIDTH, LCD_HEIGHT);
+    convertRGBAtoRGB565(_readPixelsBuffer.get(), reinterpret_cast<uint16_t*>(LCD_getFrameBuffer()), LCD_WIDTH, LCD_HEIGHT);
 	end = std::chrono::high_resolution_clock::now();
 	elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     // std::cout << "convertRGBAtoRGB565 and swapShortByteOrder time: " << elapsed.count() << " ms\n";
@@ -543,6 +533,7 @@ pvr::Result OpenGLESIntroducingPVRUtils::renderFrame()
 	// Data transfer
 	start = std::chrono::high_resolution_clock::now();
 	LCD_displayFrame();
+	// LCD_displayFrameInterlace();
 	end = std::chrono::high_resolution_clock::now();
 	elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
     // std::cout << "LCD_displayFrame time: " << elapsed.count() << " ms\n";

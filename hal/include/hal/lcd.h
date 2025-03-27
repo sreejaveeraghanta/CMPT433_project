@@ -22,7 +22,7 @@ void LCD_displayFrame();
 void LCD_displayFrameInterlace();
 
 // Return mapped frame buffer address
-void* LCD_getFrameBufferAddress();
+uint8_t* LCD_getFrameBuffer();
 
 // Send an custom LCD command
 void LCD_command(uint8_t command, uint8_t* param, int len);
