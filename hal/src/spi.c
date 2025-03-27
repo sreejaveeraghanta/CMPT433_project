@@ -57,7 +57,7 @@ int SPI_init()
 	printf("SPI: Created endpt device %s, fd = %d port = %d\n", eptdev_name,
 	    s_rcdev->fd, s_rcdev->endpt);
     printf("SPI: Exchanging messages with rpmsg device %s on rproc id %d...\n", eptdev_name, rproc_id);
-    printf("SPI inited");
+    printf("SPI inited\n");
     return STATUS_SUCCESS;
 
 cleanup:
