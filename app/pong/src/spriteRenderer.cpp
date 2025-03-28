@@ -2,6 +2,8 @@
 
 #include "PVRUtils/OpenGLES/BindingsGles.h"
 
+SpriteRenderer::SpriteRenderer() {}
+
 SpriteRenderer::SpriteRenderer(Shader shader)
 {
     m_shader = shader;

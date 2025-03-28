@@ -7,8 +7,6 @@ void debugLog(const char* format, ...);
 
 void convertRGBAtoRGB565(uint8_t *rgba, uint16_t *rgb565, int width, int height);
 
-void swapShortByteOrder(uint16_t *rgb565, int width, int height);
-
 bool testEGLError(const char* functionLastCalled);
 
 bool testGLError(const char* functionLastCalled);

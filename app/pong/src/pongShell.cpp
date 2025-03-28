@@ -15,10 +15,6 @@ pvr::Result PongShell::initApplication()
 
 	// Init HAL modules
 	LCD_init();
-	Joystick_init();
-
-	// Construct game
-	m_pong = std::make_unique<Game>(LCD_WIDTH, LCD_HEIGHT);
 
 	// Allocate a pixel buffer to read from GPU memory later
 	m_readPixBuf = std::make_unique<uint8_t[]>(LCD_WIDTH * LCD_HEIGHT * 4);
@@ -47,19 +43,13 @@ pvr::Result PongShell::initView()
         egl::Terminate(m_display);
     }
 
-	if (egl::BindAPI(EGL_OPENGL_ES_API) == EGL_FALSE)
-	{
-		fprintf(stderr, "Bind API error\n");
-        egl::Terminate(m_display);
-	}
-
 	const EGLint configAttribs[] =
 	{
         EGL_SURFACE_TYPE, EGL_PBUFFER_BIT,
         EGL_COLOR_BUFFER_TYPE, EGL_RGB_BUFFER,
-        EGL_BLUE_SIZE, 5,
+		EGL_RED_SIZE, 5,
         EGL_GREEN_SIZE, 6,
-        EGL_RED_SIZE, 5,
+        EGL_BLUE_SIZE, 5,
         EGL_ALPHA_SIZE, 8,
         EGL_DEPTH_SIZE, 8,
         EGL_RENDERABLE_TYPE, EGL_OPENGL_ES3_BIT, EGL_NONE
@@ -87,6 +77,12 @@ pvr::Result PongShell::initView()
         egl::Terminate(m_display);
     }
 
+	if (egl::BindAPI(EGL_OPENGL_ES_API) == EGL_FALSE)
+	{
+		fprintf(stderr, "Bind API error\n");
+        egl::Terminate(m_display);
+	}
+
 	const EGLint contextAttribs[] =
 	{
 		EGL_CONTEXT_MAJOR_VERSION, 3,
@@ -111,8 +107,12 @@ pvr::Result PongShell::initView()
 		egl::Terminate(m_display);
 	}
 
-	// Init game
-	m_pong->init();
+	// Enable alpha blending
+	gl::Enable(GL_BLEND);
+	gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+	// Construct game
+	m_pong = std::make_unique<Game>(LCD_WIDTH, LCD_HEIGHT);
 
     return pvr::Result::Success;
 }
@@ -121,7 +121,7 @@ pvr::Result PongShell::renderFrame()
 {
 	double frameMs = static_cast<double>(getFrameTime());
 	double dt = frameMs / 1000.0;
-	debugLog("FPS: %.1f", 1000.0 / frameMs);
+	debugLog("FPS : %.1f", 1000.0 / frameMs);
 
 	// Update game states
 	m_pong->processInput(dt);
@@ -155,7 +155,6 @@ pvr::Result PongShell::quitApplication()
     debugLog("quitApplication");
 
 	// Deinit HAL modules
-	Joystick_deinit();
 	LCD_deinit();
 
 	return pvr::Result::Success;

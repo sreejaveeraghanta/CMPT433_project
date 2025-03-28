@@ -528,7 +528,6 @@ pvr::Result OpenGLESIntroducingPVRUtils::renderFrame()
     convertRGBAtoRGB565(_readPixelsBuffer.get(), reinterpret_cast<uint16_t*>(LCD_getFrameBuffer()), LCD_WIDTH, LCD_HEIGHT);
 	end = std::chrono::high_resolution_clock::now();
 	elapsed = std::chrono::duration_cast<std::chrono::milliseconds>(end - start);
-    // std::cout << "convertRGBAtoRGB565 and swapShortByteOrder time: " << elapsed.count() << " ms\n";
 
 	// Data transfer
 	start = std::chrono::high_resolution_clock::now();

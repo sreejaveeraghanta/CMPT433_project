@@ -5,12 +5,17 @@ find_package(PVRShell REQUIRED MODULE)
 find_package(PVRUtilsGles REQUIRED MODULE)
 
 set(SRC_FILES
+   src/ball.cpp
    src/game.cpp
+   src/gameObject.cpp
+   src/paddle.cpp
+   src/player.cpp
    src/pongShell.cpp
    src/resourceManager.cpp
    src/shader.cpp    
    src/spriteRenderer.cpp
    src/texture.cpp
+   src/uiRenderer.cpp
    src/util.cpp
 )
 
@@ -23,13 +28,15 @@ target_include_directories(pong SYSTEM PRIVATE
    ${PVR_SDK_ROOT}/framework
 )
 
-target_compile_options(pong PRIVATE -Wall -Wextra -Wpedantic)
-
 target_link_libraries(pong PRIVATE
 	PVRShell
 	PVRUtilsGles
 	hal
+   # -fsanitize=address
 )
+
+target_compile_options(pong PRIVATE -Wall -Wextra -Wpedantic)
+# target_compile_options(pong PRIVATE -fsanitize=address)
 
 # Copy binary file
 add_custom_command(TARGET pong POST_BUILD 

@@ -473,15 +473,6 @@ void convertRGBAtoRGB565(const uint8_t *rgba, uint16_t *rgb565, int width, int h
     }
 }
 
-void swapShortByteOrder(uint16_t *rgb565, int width, int height)
-{
-	int numPixels = width * height;
-	// IMPORTANT, need to swap byte order of each uint16_t to before sending to LCD
-	for (int i = 0; i < numPixels; i++) {
-		rgb565[i] = ((rgb565[i] >> 8) & 0xFF) | ((rgb565[i] << 8) & 0xFF00);
-	}
-}
-
 static void* pointer = malloc(240*240*4);
 /*!*********************************************************************************************************************
 \param[in]			shaderProgram               The shader program used to render the scene
@@ -554,7 +545,7 @@ bool renderScene(GLuint shaderProgram, EGLDisplay eglDisplay, EGLSurface eglSurf
 
     long usec = (ts_end.tv_sec - ts_cur.tv_sec) * 1000000L + (ts_end.tv_nsec - ts_cur.tv_nsec) / 1000L;
 
-    printf("convert rgb565 and swapShortByteOrder time: %.2fms\n", usec / 1000.0);
+    printf("convert rgb565 time: %.2fms\n", usec / 1000.0);
 
 
 

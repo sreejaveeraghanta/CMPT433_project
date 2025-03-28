@@ -109,6 +109,10 @@ pvr::Result BreakoutShell::initView()
 		egl::Terminate(m_display);
 	}
 
+	// Enable alpha blending
+	gl::Enable(GL_BLEND);
+	gl::BlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+	
 	// Init game, load shader and texture
 	m_breakout->Init();
 

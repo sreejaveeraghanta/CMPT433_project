@@ -95,17 +95,17 @@ void LCD_init()
 
     // Screen init, borrowed from waveshare library
     // Hardware reset
-    struct timespec _100ms = {.tv_sec = 0, .tv_nsec = 100 * 1e6};
+    struct timespec _30ms = {.tv_sec = 0, .tv_nsec = 30 * 1e6};
     setPin(s_gpioLineFdRst, 1);
-    nanosleep(&_100ms, NULL);
+    nanosleep(&_30ms, NULL);
     setPin(s_gpioLineFdRst, 0);
-    nanosleep(&_100ms, NULL);
+    nanosleep(&_30ms, NULL);
     setPin(s_gpioLineFdRst, 1);
-    nanosleep(&_100ms, NULL);
+    nanosleep(&_30ms, NULL);
     
     // LCD_sendCommand(0x01); // Software reset
     // LCD_sendByteData(0x01);
-    // nanosleep(&_100ms, NULL); // Required
+    // nanosleep(&_30ms, NULL); // Required
 
     setPin(s_gpioLineFdBl, 1); // Backlight on
 
@@ -176,12 +176,6 @@ void LCD_init()
     sendByte(0x1F);
     sendByte(0x20);
     sendByte(0x23);
-
-    // sendCommand(0x53); // control
-    // sendByte(0b00101100); 
-
-    // sendCommand(0x51); // Set brightness
-    // sendByte(0x00); 
 
     sendCommand(0x21); // Display inversion on
     sendCommand(0x11); // Sleep Out

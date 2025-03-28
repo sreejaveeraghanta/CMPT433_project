@@ -12,6 +12,7 @@ class SpriteRenderer
 {
 public:
     // Constructor (inits shaders/shapes)
+    SpriteRenderer();
     SpriteRenderer(Shader shader);
     // Destructor
     ~SpriteRenderer();

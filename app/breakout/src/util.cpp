@@ -56,15 +56,6 @@ void convertRGBAtoRGB565(uint8_t *rgba, uint16_t *rgb565, int width, int height)
 
 }
 
-void swapShortByteOrder(uint16_t *rgb565, int width, int height)
-{
-	int numPixels = width * height;
-	// IMPORTANT, need to swap byte order of each uint16_t to before sending to LCD
-	for (int i = 0; i < numPixels; i++) {
-		rgb565[i] = ((rgb565[i] >> 8) & 0xFF) | ((rgb565[i] << 8) & 0xFF00);
-	}
-}
-
 bool testEGLError(const char* functionLastCalled)
 {
 	//	eglGetError returns the last error that occurred using EGL, not necessarily the status of the last called function. The user has to
