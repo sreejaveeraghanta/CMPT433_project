@@ -7,6 +7,7 @@ set(SRC_FILES
    src/r5f.c
    src/spi.c
    src/pwm.c
+   src/udp_client.c
 )
 
 add_library(hal STATIC ${SRC_FILES})

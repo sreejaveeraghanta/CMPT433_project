@@ -68,7 +68,7 @@ while running:
     for event in pygame.event.get(): 
         
         if event.type == pygame.QUIT: 
-            # client_socket.sendto("stop".encode(), server_address)
+            client_socket.sendto("stop".encode(), server_address)
             running = False
 
 
