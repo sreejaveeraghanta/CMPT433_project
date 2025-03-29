@@ -11,6 +11,11 @@
 class GameObject
 {
 public:
+    // Object state
+    glm::vec2   Position, Size, Velocity;
+    glm::vec3   Color;
+    float       Rotation;
+
     // Constructors
     GameObject();
     GameObject(glm::vec2 pos, glm::vec2 size, Texture2D sprite, float rotation, glm::vec3 color = glm::vec3(1.0f), glm::vec2 velocity = glm::vec2(0.0f, 0.0f));
@@ -19,10 +24,6 @@ public:
     virtual void draw(SpriteRenderer &renderer);
 
 protected:
-    // Object state
-    glm::vec2   m_position, m_size, m_velocity;
-    glm::vec3   m_color;
-    float       m_rotation;
     bool        m_destroyed;
 
     // Render state

@@ -42,4 +42,6 @@ private:
     // Players
     Player m_player1; // Left
     Player m_player2; // Right
+
+    void doCollision(Ball& ball, Paddle paddle);
 };

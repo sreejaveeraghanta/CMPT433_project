@@ -8,5 +8,5 @@ public:
     Paddle();
     Paddle(glm::vec2 position, glm::vec2 size, glm::vec3 color, Texture2D sprite);
 
-    void move(float pixels, int windowHeight);
+    void move(float dt, int windowHeight);
 };
