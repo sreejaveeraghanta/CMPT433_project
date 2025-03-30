@@ -89,6 +89,10 @@
         "cfenv": "cpp",
         "cinttypes": "cpp",
         "optional": "cpp",
-        "*.stdh": "cpp"
+        "*.stdh": "cpp",
+        "stdbool.h": "c",
+        "forward_list": "cpp",
+        "audiomixer.h": "c",
+        "asoundlib.h": "c"
     }
 }

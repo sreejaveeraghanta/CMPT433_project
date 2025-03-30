@@ -1,4 +1,5 @@
 #include "ball.h"
+#include "sounds.h"
 
 #include <random>
 #include <cstdlib>  // For rand()
@@ -20,6 +21,7 @@ void Ball::move(float dt, int windowWidth, Player& player1, Player& player2)
     if (Position.x <= 0.0f)
     {
         player2.Score += 1;
+        sound_play_score();
         reset();
     }
     // Right edge
@@ -33,12 +35,14 @@ void Ball::move(float dt, int windowWidth, Player& player1, Player& player2)
     {
         Velocity.y = -Velocity.y;
         Position.y = 0.0f;
+        sound_play_collision();
     }
     // Bottom edge
     else if (Position.y + Size.y >= windowWidth)
     {
         Velocity.y = -Velocity.y;
         Position.y = windowWidth - Size.y;
+        sound_play_collision();
     }
 }
 

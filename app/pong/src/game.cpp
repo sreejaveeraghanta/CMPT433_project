@@ -4,9 +4,13 @@
 #include "resourceManager.h"
 #include "paddle.h"
 #include "util.h"
+#include "sounds.h"
 
 Game::Game(int width, int height) : m_width(width), m_height(height)
 {
+    // Init sound
+    sound_init();
+
     // Init control
     Joystick_init();
 
@@ -51,6 +55,9 @@ Game::~Game()
 
     // Deinit control
     Joystick_deinit();
+
+    // Cleans up sound
+    sound_cleanup();
 }
 
 void Game::processInput(float dt)
@@ -121,6 +128,8 @@ void Game::doCollision(Ball& ball, Paddle paddle)
     {
         ball.Velocity.x *= -1; 
 
+        sound_play_collision();
+
         // Push ball out of the paddle
         if (distance.x > 0) 
             ball.Position.x = paddle.Position.x + paddle.Size.x;
@@ -134,6 +143,8 @@ void Game::doCollision(Ball& ball, Paddle paddle)
     if ((halfHeight + ball.Radius) > glm::abs(distance.y) && (halfWidth > glm::abs(distance.x)))
     {
         ball.Velocity.y = -ball.Velocity.y + k * paddle.Velocity.y; 
+
+        sound_play_collision();
 
         // Push ball out of the paddle
         if (distance.y > 0) 
@@ -152,5 +163,8 @@ void Game::doCollision(Ball& ball, Paddle paddle)
     {
         ball.Velocity.x *= -1;
         ball.Velocity.y = -ball.Velocity.y + k * paddle.Velocity.y; 
+
+        sound_play_collision();
     }
+
 }
