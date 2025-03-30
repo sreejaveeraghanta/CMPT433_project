@@ -14,6 +14,7 @@ set(SRC_FILES
    src/player.cpp
    src/pongShell.cpp
    src/resourceManager.cpp
+   src/rotary_statemachine.c
    src/shader.cpp    
    src/sounds.c
    src/spriteRenderer.cpp
@@ -24,6 +25,7 @@ set(SRC_FILES
 
 set_source_files_properties(
     src/audioMixer.c
+    src/rotary_statemachine.c
     src/sounds.c
     PROPERTIES LANGUAGE C
 )

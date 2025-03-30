@@ -5,6 +5,7 @@
 #include "paddle.h"
 #include "util.h"
 #include "sounds.h"
+#include "rotary_statemachine.h"
 
 Game::Game(int width, int height) : m_width(width), m_height(height)
 {
@@ -13,6 +14,8 @@ Game::Game(int width, int height) : m_width(width), m_height(height)
 
     // Init control
     Joystick_init();
+
+    RotaryStateMachine_init();
 
     // Load shaders
     ResourceManager::loadShader("shaders/sprite.vs", "shaders/sprite.frag", nullptr, "sprite");
@@ -54,6 +57,8 @@ Game::~Game()
     ResourceManager::clear();
 
     // Deinit control
+    RotaryStateMachine_cleanup();
+
     Joystick_deinit();
 
     // Cleans up sound
