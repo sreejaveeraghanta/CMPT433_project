@@ -6,6 +6,7 @@
 #include "util.h"
 #include "sounds.h"
 #include "rotary_statemachine.h"
+#include "hal/udp.h"
 
 Game::Game(int width, int height) : m_width(width), m_height(height)
 {
@@ -14,8 +15,17 @@ Game::Game(int width, int height) : m_width(width), m_height(height)
 
     // Init control
     Joystick_init();
+    UDP_init();
 
     RotaryStateMachine_init();
+    // TODO get correct path, server doesn't run
+    int status = system("sh ../../server/run_server.sh");
+    if (status < 0){
+        printf("Unable to run python script\n");
+    }
+    else {
+        printf("AI player ready\n");
+    }
 
     // Load shaders
     ResourceManager::loadShader("shaders/sprite.vs", "shaders/sprite.frag", nullptr, "sprite");
@@ -60,9 +70,11 @@ Game::~Game()
     RotaryStateMachine_cleanup();
 
     Joystick_deinit();
+    UDP_deinit();
 
     // Cleans up sound
     sound_cleanup();
+
 }
 
 void Game::processInput(float dt)
@@ -91,12 +103,30 @@ void Game::processInput(float dt)
     {
         debugLog("Pressed");
     }
+
+   
+    
 }
 
 void Game::update(float dt)
 {
+    UDP_send(m_player1.MyPaddle.Position.x, m_player1.MyPaddle.Position.y, 
+            m_ball.Position.x, m_ball.Position.y, 
+            m_player2.MyPaddle.Position.x, m_player2.MyPaddle.Position.y);
     m_ball.move(dt, m_width, m_player1, m_player2);
     m_player1.MyPaddle.move(dt, m_height);
+
+    int player2_movement = UDP_recv();
+    // update player two's position (UP)
+    if(player2_movement == 1){
+        m_player2.MyPaddle.Velocity.y = -250.0f;
+    }
+    // update player two's position (down)
+    if(player2_movement == -1){
+        m_player2.MyPaddle.Velocity.y = 250.0f;
+    }
+    m_player2.MyPaddle.move(dt, m_height);
+
     doCollision(m_ball, m_player1.MyPaddle);
     doCollision(m_ball, m_player2.MyPaddle);
 }

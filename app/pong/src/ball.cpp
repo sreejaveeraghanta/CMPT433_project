@@ -29,6 +29,9 @@ void Ball::move(float dt, int windowWidth, Player& player1, Player& player2)
     {
         Velocity.x = -Velocity.x;
         Position.x = windowWidth - Size.x;
+        player1.Score+=1;
+        sound_play_score();
+        reset();
     }
     // Top edge
     if (Position.y <= 0.0f)
@@ -58,14 +61,14 @@ void Ball::reset()
     std::uniform_int_distribution<std::mt19937::result_type> xDist(0, 1);
     std::uniform_int_distribution<std::mt19937::result_type> yDist(0, 1);
 
-    float toX = xDist(rng) == 0 ? 1.0 : -1.0;
-    float toY = xDist(rng) == 0 ? 1.0 : -1.0;
+    float toX = xDist(rng) == 0 ? 0.5 : -0.5;
+    float toY = xDist(rng) == 0 ? 0.5 : -0.5;
     float angleDeg = angleDist(rng);
     float angleRad = glm::radians(angleDeg);
 
     glm::vec2 unitVelocity(glm::cos(angleRad), glm::sin(angleRad));
     float speed = glm::length(m_defaultVelocity);
-    Velocity = unitVelocity * speed;
+    Velocity = unitVelocity*speed;
     Velocity.x *= toX;
     Velocity.y *= toY;
 }
