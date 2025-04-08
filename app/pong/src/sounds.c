@@ -5,9 +5,9 @@
 #include <alloca.h> // needed for mixer
 #include <time.h>
 
-#define BACKGROUND_MUSIC_FILE "wave-files/787932__edwardszakal__retro-game-music.wav"
-#define COLLISION_SOUND_FILE "wave-files/582697__ironcross32__short-beep-02.wav"
-#define SCORE_SOUND_FILE "wave-files/shorter_beep.wav"
+#define BACKGROUND_MUSIC_FILE "sounds/787932__edwardszakal__retro-game-music.wav"
+#define COLLISION_SOUND_FILE "sounds/582697__ironcross32__short-beep-02.wav"
+#define SCORE_SOUND_FILE "sounds/shorter_beep.wav"
 
 #define MAX_VOLUME 100
 #define MIN_VOLUME 0

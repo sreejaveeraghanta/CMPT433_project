@@ -68,10 +68,3 @@ add_custom_command(TARGET pong POST_BUILD
     "${CMAKE_SOURCE_DIR}/assets/pong"
     "~/cmpt433/public/myApps/pong/"
  COMMENT "Copying assets to public NFS directory")
-
- # Copy the WAV folder to NFS
-add_custom_command(TARGET pong POST_BUILD 
-COMMAND "${CMAKE_COMMAND}" -E copy_directory
-   "${CMAKE_SOURCE_DIR}/wave-files"
-   "~/cmpt433/public/myApps/pong/wave-files" 
-COMMENT "Copying WAVE files to public NFS directory")
