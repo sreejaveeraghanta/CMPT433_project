@@ -20,6 +20,7 @@ static bool isInitialized;
 pthread_t listener_thread;
 static bool active;
 static bool terminated = false;
+static int player2_dir = 0;
 
 static void send_message(char *response) {
   char message[MAX_LEN];
@@ -34,8 +35,23 @@ static void* listener() {
   while(active){
     int bytes = recvfrom(socketDescriptor, message, MAX_LEN - 1, 0, (struct sockaddr *) &sinRemote, &sin_len); 
     message[bytes] = '\0'; 
-  }
+    printf("IN THE LISTENEDE THERAD \n");
+    if (strcmp(message, "up") == 0) {
+      printf("UP\n");
+      player2_dir = 1;
+    }
 
+    if (strcmp(message, "down") == 0) {
+      printf("DOWN\n");
+      player2_dir = -1;
+    }
+
+    if (strcmp(message, "idle") == 0) {
+      printf("DOWN\n");
+      player2_dir = 0;
+    }
+
+  }
   pthread_exit(NULL);
   return NULL;
 }
@@ -55,7 +71,7 @@ void UDP_init(void) {
 
   active = true;
   isInitialized = true;
-  // pthread_create(&listener_thread, NULL, listener, NULL);
+  pthread_create(&listener_thread, NULL, listener, NULL);
   printf("UDP inited\n");
 }
 
@@ -84,17 +100,5 @@ void UDP_send(float p1_pos_x, float p1_pos_y,
 
 
 int UDP_recv(void) {
-  unsigned int sin_len = sizeof(sinRemote); 
-  char message[MAX_LEN]; 
-  int bytes = recvfrom(socketDescriptor, message, MAX_LEN - 1, 0, (struct sockaddr *) &sinRemote, &sin_len); 
-  message[bytes] = '\0'; 
-
-  if (strcmp(message, "up") == 0) {
-    return 1;
-  }
-  if (strcmp(message, "down") == 0) {
-    return -1;
-  }
-  return 0;
-
+  return player2_dir;
 }

@@ -104,18 +104,6 @@ void Game::processInput(float dt)
         debugLog("Pressed");
     }
 
-   
-    
-}
-
-void Game::update(float dt)
-{
-    UDP_send(m_player1.MyPaddle.Position.x, m_player1.MyPaddle.Position.y, 
-            m_ball.Position.x, m_ball.Position.y, 
-            m_player2.MyPaddle.Position.x, m_player2.MyPaddle.Position.y);
-    m_ball.move(dt, m_width, m_player1, m_player2);
-    m_player1.MyPaddle.move(dt, m_height);
-
     int player2_movement = UDP_recv();
     // update player two's position (UP)
     if(player2_movement == 1){
@@ -125,7 +113,21 @@ void Game::update(float dt)
     if(player2_movement == -1){
         m_player2.MyPaddle.Velocity.y = 250.0f;
     }
+    if(player2_movement == 0){
+        m_player2.MyPaddle.Velocity.y = 0.0f;
+    }
+}
+
+void Game::update(float dt)
+{
+    m_ball.move(dt, m_width, m_player1, m_player2);
+    m_player1.MyPaddle.move(dt, m_height);
+
     m_player2.MyPaddle.move(dt, m_height);
+
+    UDP_send(m_player1.MyPaddle.Position.x, m_player1.MyPaddle.Position.y, 
+            m_ball.Position.x, m_ball.Position.y, 
+            m_player2.MyPaddle.Position.x, m_player2.MyPaddle.Position.y);
 
     doCollision(m_ball, m_player1.MyPaddle);
     doCollision(m_ball, m_player2.MyPaddle);

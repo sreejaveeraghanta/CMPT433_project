@@ -29,6 +29,8 @@ ball = pygame.image.load("./assets/ball.png")
 ball = pygame.transform.scale(ball, (ball_radius, ball_radius))
 
 
+up_message_sent = False
+down_message_sent = False
 running = True
 
 # to keep track of which player initially (switches between players same controller)
@@ -60,15 +62,26 @@ while running:
             client_socket.sendto("stop".encode(), server_address)
             running = False
 
-
+        if event.type == pygame.KEYUP: 
+            if event.key == pygame.K_UP: 
+                if up_message_sent: 
+                    client_socket.sendto("idle".encode(), server_address)
+                up_message_sent = False
+            if event.key == pygame.K_DOWN: 
+                if  down_message_sent: 
+                    client_socket.sendto("idle".encode(), server_address)
+                down_message_sent = False
     ##TODO must update since it sends to client continuously
     ## keyboard controls player2!
     keys = pygame.key.get_pressed()
     if keys[pygame.K_UP]: 
-        client_socket.sendto("up".encode(), server_address)
+        if not up_message_sent: 
+            client_socket.sendto("up".encode(), server_address)
+            up_message_sent = True
     if keys[pygame.K_DOWN]: 
-        client_socket.sendto("down".encode(), server_address)
-
+        if not down_message_sent: 
+            client_socket.sendto("down".encode(), server_address)
+            down_message_sent = True
 
     pygame.display.update()
 
