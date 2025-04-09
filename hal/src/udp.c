@@ -22,6 +22,7 @@ static bool active;
 static bool server_ready = false;
 static bool terminated = false;
 static int player2_dir = 0;
+static bool accelerate = false;
 
 static void send_message(char *response)
 {
@@ -58,6 +59,11 @@ static void *listener()
     if (strcmp(message, "idle") == 0)
     {
       player2_dir = 0;
+    }
+
+    if (strcmp(message, "accelerate") == 0)
+    {
+      accelerate = true;
     }
   }
   pthread_exit(NULL);
@@ -120,4 +126,14 @@ int UDP_recv(void)
 bool UDP_server_ready(void)
 {
   return server_ready;
+}
+
+bool UDP_is_accelerate(void) 
+{
+  return accelerate;
+}
+
+void UDP_set_accelerate(void) 
+{
+  accelerate = false;
 }

@@ -8,6 +8,7 @@ set(SRC_FILES
    src/spi.c
    src/pwm.c
    src/udp.c
+   src/accelerometer.c
 )
 
 add_library(hal STATIC ${SRC_FILES})
