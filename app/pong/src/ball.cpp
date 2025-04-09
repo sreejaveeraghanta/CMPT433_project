@@ -1,5 +1,6 @@
 #include "ball.h"
 #include "sounds.h"
+#include "led_strip.h"
 
 #include <random>
 #include <cstdlib>  // For rand()
@@ -22,6 +23,8 @@ void Ball::move(float dt, int windowWidth, Player& player1, Player& player2)
     {
         player2.Score += 1;
         sound_play_score();
+        opponent_scored_increment();
+        check_hit();
         reset();
     }
     // Right edge
@@ -31,6 +34,8 @@ void Ball::move(float dt, int windowWidth, Player& player1, Player& player2)
         Position.x = windowWidth - Size.x;
         player1.Score+=1;
         sound_play_score();
+        player_scored_increment();
+        check_hit();
         reset();
     }
     // Top edge

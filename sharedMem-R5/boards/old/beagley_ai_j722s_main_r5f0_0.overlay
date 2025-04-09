@@ -1,0 +1,111 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <zephyr/dt-bindings/gpio/gpio.h>
+
+ / {
+	aliases {
+		led0 = &main_led;
+	};
+
+	leds {
+		compatible = "gpio-leds";
+
+		main_led: led_0 {
+
+			// REFERENCE: WHAT PINS WE HAVE
+			// &main_gpio0 {
+			// 	status = "okay";
+			// 	pinctrl-names = "default";
+			// 	gpio-line-names = "", "", "", "", "", /* 0-4 */
+			// 			  "", "", "", "", "", /* 5-9 */
+			// 			  "", "", "", "", "", /* 10-14 */
+			// 			  "", "", "", "", "", /* 15-19 */
+			// 			  "", "", "", "", "", /* 20-24 */
+			// 			  "", "", "", "", "", /* 25-29 */
+			// 			  "", "", "USB_RST", "GPIO27", "", /* 30-34 */
+			// 			  "", "GPIO26", "", "GPIO4", "", /* 35-39 */
+			// 			  "", "GPIO22", "GPIO25", "", ""; /* 40-44 */
+			// };
+
+			// gpios = <&gpio0 x GPIO_ACTIVE_HIGH>;   // GPIO27 = LCD-DC
+			// gpios = <&gpio0 x GPIO_ACTIVE_HIGH>;   // GPIO26 = Audio-Reset
+			// gpios = <&gpio0 x GPIO_ACTIVE_HIGH>;   // GPIO4  = PYMNL Header
+			// gpios = <&gpio0 x GPIO_ACTIVE_HIGH>;   // GPIO22 = LCD-RST
+			// gpios = <&gpio0 42 GPIO_ACTIVE_HIGH>;   // GPIO25 = Zen Hat LED					**Output**
+
+			// REFERENCE
+			// &main_gpio1 {
+			// 	status = "okay";
+			// 	pinctrl-names = "default";
+			// 	gpio-line-names = "", "", "", "", "", /* 0-4 */
+			// 			  "", "", "GPIO16", "GPIO17", "GPIO21", /* 5-9 */
+			// 			  "GPIO20", "GPIO18", "GPIO19", "GPIO15", "GPIO14", /* 10-14 */
+			// 			  "GPIO5", "GPIO12", "GPIO6", "GPIO13", ""; /* 15-19 */
+			// };
+
+			//gpios = <&gpio1 11 GPIO_ACTIVE_HIGH>;
+
+			// gpios = <&gpio1 15 GPIO_ACTIVE_HIGH>;   // GPIO5  Joystick pushbutton		**Input**
+			gpios = <&gpio1 17 GPIO_ACTIVE_HIGH>;   // GPIO6  PYMNL Header, Pin 3  (Hat pin 31)
+				// SoC Pin D20 - 7:GPIO1_17: Address 0x000F41BC
+
+			// gpios = <&gpio1 16 GPIO_ACTIVE_HIGH>;   // GPIO12 LED Emitter (PWM on Linux)
+			// gpios = <&gpio1 18 GPIO_ACTIVE_HIGH>;   // GPIO13 LCD Backlight 				**Output**
+			// gpios = <&gpio1 14 GPIO_ACTIVE_HIGH>;   // GPIO14 UART - TXD (UART Header)
+			// gpios = <&gpio1 13 GPIO_ACTIVE_HIGH>;   // GPIO15 UART - RXD (UART Header)
+			// gpios = <&gpio1  7 GPIO_ACTIVE_HIGH>;   // GPIO16 Rotary Encoder - A
+			// gpios = <&gpio1  8 GPIO_ACTIVE_HIGH>;   // GPIO17 Rotary Encoder - B
+			// gpios = <&gpio1 11 GPIO_ACTIVE_HIGH>;   // GPIO18 Audio - BCLK
+				// SoC Pin D25 - 7:GPIO1_11: Address 0x000F41A4
+			// gpios = <&gpio1 12 GPIO_ACTIVE_HIGH>;   // GPIO19 Audio - WCLK
+			// gpios = <&gpio1 10 GPIO_ACTIVE_HIGH>;   // GPIO20 Audio - DIN
+			// gpios = <&gpio1  9 GPIO_ACTIVE_HIGH>;   // GPIO21 Audio - DOUT
+		};
+
+		mcu_led: led_1 {
+			gpios = <&mcu_gpio0 18 GPIO_ACTIVE_HIGH>;
+		};
+	};
+};
+
+&pinctrl {
+	mcu_gpio0_led_default: mcu_gpio0_led_default {
+		pinmux = <K3_PINMUX(0x0048, PIN_OUTPUT, MUX_MODE_7)>; /* (E11) MCU_I2C0_SDA.MCU_GPIO0_18 */
+	};
+
+
+	// // main_gpio0
+	// gpio0_led_default: gpio1_led_default {
+	// 	// REVISIT: Fixing...
+	// 	pinmux = <K3_PINMUX(0x01a4, PIN_OUTPUT, MUX_MODE_7)>; /* (D25) MCASP0_ACLKX.GPIO1_11 */
+	// };
+
+	// main_gpio1
+	// SEE am67a.pdf; search the Ball Number, like D25; pick last 3 digits of pin address as offset.
+	gpio1_led_default: gpio1_led_default {
+		// pinmux = <K3_PINMUX(0x01a4, PIN_OUTPUT, MUX_MODE_7)>; /* GPIO18 (D25) MCASP0_ACLKX.GPIO1_11 */
+		pinmux = <K3_PINMUX(0x01BC, PIN_OUTPUT, MUX_MODE_7)>; /* g (D20) */
+	};
+};
+
+&mcu_gpio0 {
+	pinctrl-0 = <&mcu_gpio0_led_default>;
+	pinctrl-names = "default";
+	status = "okay";
+};
+
+
+// MAIN GPIO:
+// &gpio0 {
+// 	pinctrl-0 = <&gpio0_led_default>;
+// 	pinctrl-names = "default";
+// 	status = "okay";
+// };
+
+&gpio1 {
+	pinctrl-0 = <&gpio1_led_default>;
+	pinctrl-names = "default";
+	status = "okay";
+};

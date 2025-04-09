@@ -11,7 +11,7 @@
 #include <linux/spi/spidev.h>
 #include <string.h>
 
-#define SPI_DEVICE "/dev/spidev1.0"
+#define SPI_DEVICE "/dev/spidev0.0"
 #define SPI_MODE SPI_MODE_0
 #define SPI_BITS_PER_WORD 32
 #define SPI_SPEED 50000000

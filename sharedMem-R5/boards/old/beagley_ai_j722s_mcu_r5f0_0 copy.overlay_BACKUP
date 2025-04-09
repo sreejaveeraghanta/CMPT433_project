@@ -1,0 +1,111 @@
+/*
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+#include <zephyr/dt-bindings/gpio/gpio.h>
+
+ / {
+    aliases {
+        led0 = &mcu_led;
+    };
+
+    // Try to pick what UART to print out on.
+    chosen {
+		zephyr,sram = &atcm;
+		zephyr,console = &uart1;
+	};
+
+
+    // j722s_mcu.dtsi seems to be lacking the `pinctrl` definition. Ccreating it here.
+    // pinctrl_mcu: pinctrl_mcu@4084000 {
+	// 	compatible = "ti,k3-pinctrl";
+	// 	reg = <0x04084000 0x2ac>;
+	// 	status = "okay";
+	// };
+
+    leds {
+        compatible = "gpio-leds";
+
+        // REFERENCE:
+        // &mcu_gpio0 {
+        // 	status = "okay";
+        // 	pinctrl-names = "default";
+        // 	gpio-line-names = "GPIO8", "", "GPIO11", "GPIO10", "GPIO9", /* 0-4 */
+        // 			  "", "", "GPIO23", "", "GPIO7", /* 5-9 */
+        // 			  "GPIO24", "", "", "HDMI_RSTn", "HDMI_INTn", /* 10-14 */
+        // 			  "", "", "GPIO3", "GPIO2", ""; /* 15-19 */
+        // };
+
+        // Fill in info:
+        // 1. Find the GPIO# from the Zen Hat and what it connects to
+        // 2. Find the SoC pin from BeagleY-AI pinout: https://pinout.beagleboard.io/pinout/
+        // 3. In the am67a.pdf, search the SoC pin and find its address. Offset is bottom 12 bits
+
+
+        mcu_led: led_0 {
+            // gpios = <&mcu_gpio0 0 GPIO_ACTIVE_HIGH>; // GPIO8  = SPI0-CE0  - LCD-CS
+            // gpios = <&mcu_gpio0 2 GPIO_ACTIVE_HIGH>; // GPIO11 = SPI0-SCLK - PYMNL
+            // gpios = <&mcu_gpio0 3 GPIO_ACTIVE_HIGH>; // GPIO10 = SPI0-MOSI - PYMNL
+
+            // NO WORKY
+            // SOC C11 - Mode 7:MCU_GPIO0_4 -- Address 0x04084010
+            // gpios = <&mcu_gpio0 4 GPIO_ACTIVE_HIGH>; // GPIO9  = SPI0-MISO - PYMNL 
+
+            // Works when Linux drives the pin while R5 is running.
+            // SoC pin B5 - Mode 7:MCU_GPIO0_7  - Address 0x0408401C
+            // gpios = <&mcu_gpio0 7 GPIO_ACTIVE_HIGH>; // GPIO23 = NeoPixel Data Out - LED Strip   **Output**
+            // --> Had to execute `gpioset gpiochip0 7=1` on clean boot to make it work.
+
+            // NO WORKY
+            // SoC pin B3 - Mode 7:MCU_GPIO0_9  - Address 0x04084024
+            gpios = <&mcu_gpio0 9 GPIO_ACTIVE_HIGH>; // GPIO7  = CE1       - PYMNL.9             **Output**
+            // --> Had to execute `gpioset gpiochip0 9=1` on clean boot to make it work.
+
+            // // SoC pin C8 - Mode 7:MCU_GPIO0_10 - Address 0x04084028
+            // gpios = <&mcu_gpio0 10 GPIO_ACTIVE_HIGH>; // GPIO24 = Encoder push-button             **Input**
+
+            // NO WORKY
+            // SoC pin B13 - Mode 7:MCU_GPIO0_17 - Address 0x04084044
+            // gpios = <&mcu_gpio0 17 GPIO_ACTIVE_HIGH>; // GPIO3  = I2C1-SCL
+
+            // gpios = <&mcu_gpio0 18 GPIO_ACTIVE_HIGH>; // GPIO2  = I2C1-SDA
+        };
+    };
+
+    // TODO: Added by Brian Fraser
+    pinctrl_mcu: pinctrl_mcu@4084000 {
+        compatible = "ti,k3-pinctrl";
+        reg = <0x04084000 0x88>;    // Pulled 0x88 from somewhere; seems like there are 24 pins, so 0x60 at 4-bytes each
+        status = "okay";
+    };
+
+};
+
+
+// &pinctrl {
+&pinctrl_mcu {
+    mcu_gpio0_led_default: mcu_gpio0_led_default {
+        pinmux = <K3_PINMUX(0x0000, PIN_OUTPUT, MUX_MODE_7)>; /* BOGUS */
+        // pinmux = <K3_PINMUX(0x0048, PIN_OUTPUT, MUX_MODE_7)>; /* (E11) MCU_I2C0_SDA.MCU_GPIO0_18 */
+        // pinmux = <K3_PINMUX(0x0024, PIN_OUTPUT, MUX_MODE_7)>; /* (B3) GPIO7*/
+        // pinmux = <K3_PINMUX(0x001C, PIN_OUTPUT, MUX_MODE_7)>; /* (B5) GPIO23*/  // WORKS!!
+        // pinmux = <K3_PINMUX(0x0010, PIN_OUTPUT, MUX_MODE_7)>; /* (C11)*/ 
+        // pinmux = <K3_PINMUX(0x0044, PIN_OUTPUT, MUX_MODE_7)>; /* (B13)*/ 
+
+    };
+};
+
+&mcu_gpio0 {
+    pinctrl-0 = <&mcu_gpio0_led_default>;
+    pinctrl-names = "default";
+    status = "okay";
+};
+
+
+// Trying to get UART working too.
+&uart1 {
+	status = "okay";
+	pinctrl-0 = <&uart1_tx_default &uart1_rx_default>;
+	pinctrl-names = "default";
+	current-speed = <115200>;
+};

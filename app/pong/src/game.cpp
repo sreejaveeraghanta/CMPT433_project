@@ -5,11 +5,17 @@
 #include "paddle.h"
 #include "util.h"
 #include "sounds.h"
+#include "led_strip.h"
+#include "sharedDataLayout.h"
 #include "rotary_statemachine.h"
 #include "hal/udp.h"
 
 Game::Game(int width, int height) : m_width(width), m_height(height)
 {
+    // Init shared memory
+    shared_memory_init();
+    led_strip_init();
+
     // Init sound
     sound_init();
 
@@ -18,6 +24,7 @@ Game::Game(int width, int height) : m_width(width), m_height(height)
     UDP_init();
 
     RotaryStateMachine_init();
+
     // TODO get correct path, server doesn't run
     int status = system("sh ../../server/run_server.sh");
     if (status < 0){
@@ -75,6 +82,9 @@ Game::~Game()
     // Cleans up sound
     sound_cleanup();
 
+    led_strip_cleanup();
+    // Clean up memory
+    shared_memory_cleanup();
 }
 
 void Game::processInput(float dt)

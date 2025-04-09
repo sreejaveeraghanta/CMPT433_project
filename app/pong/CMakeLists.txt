@@ -10,12 +10,14 @@ set(SRC_FILES
    src/ball.cpp
    src/game.cpp
    src/gameObject.cpp
+   src/led_strip.c
    src/paddle.cpp
    src/player.cpp
    src/pongShell.cpp
    src/resourceManager.cpp
    src/rotary_statemachine.c
-   src/shader.cpp    
+   src/shader.cpp
+   src/sharedMem-Linux.c
    src/sounds.c
    src/spriteRenderer.cpp
    src/texture.cpp
@@ -25,7 +27,9 @@ set(SRC_FILES
 
 set_source_files_properties(
     src/audioMixer.c
+    src/led_strip.c
     src/rotary_statemachine.c
+    src/sharedMem-Linux.c
     src/sounds.c
     PROPERTIES LANGUAGE C
 )
