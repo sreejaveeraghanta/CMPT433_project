@@ -25,15 +25,6 @@ Game::Game(int width, int height) : m_width(width), m_height(height)
 
     RotaryStateMachine_init();
 
-    // TODO get correct path, server doesn't run
-    int status = system("sh ../../server/run_server.sh");
-    if (status < 0){
-        printf("Unable to run python script\n");
-    }
-    else {
-        printf("AI player ready\n");
-    }
-
     // Load shaders
     ResourceManager::loadShader("shaders/sprite.vs", "shaders/sprite.frag", nullptr, "sprite");
 
@@ -132,12 +123,13 @@ void Game::update(float dt)
 {
     m_ball.move(dt, m_width, m_player1, m_player2);
     m_player1.MyPaddle.move(dt, m_height);
-
     m_player2.MyPaddle.move(dt, m_height);
 
+    // Updates the player on the server side
     UDP_send(m_player1.MyPaddle.Position.x, m_player1.MyPaddle.Position.y, 
             m_ball.Position.x, m_ball.Position.y, 
-            m_player2.MyPaddle.Position.x, m_player2.MyPaddle.Position.y);
+            m_player2.MyPaddle.Position.x, m_player2.MyPaddle.Position.y, 
+            m_player1.Score, m_player2.Score);
 
     doCollision(m_ball, m_player1.MyPaddle);
     doCollision(m_ball, m_player2.MyPaddle);

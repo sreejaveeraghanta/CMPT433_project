@@ -21,6 +21,8 @@ void Ball::move(float dt, int windowWidth, Player& player1, Player& player2)
     // Left edge
     if (Position.x <= 0.0f)
     {
+        Velocity.x = -Velocity.x;
+        Position.x = Size.x;
         player2.Score += 1;
         sound_play_score();
         opponent_scored_increment();

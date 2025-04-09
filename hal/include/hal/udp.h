@@ -18,7 +18,8 @@ void UDP_init(void); //create socket to listen (thread)
 void UDP_deinit(void); // to close all sockets
 void UDP_send(float p1_pos_x, float p1_pos_y,
               float ball_pos_x, float ball_pos_y,
-              float p2_pos_x, float p2_pos_y);
+              float p2_pos_x, float p2_pos_y,
+              int p1_score, int p2_score);
 int UDP_recv(void);
 
 #ifdef __cplusplus
