@@ -52,15 +52,17 @@ The game was based on a tutorial from on [learnopengl.com](https://learnopengl.c
 
 ## pong:
 The multiplayer game we are trying to make.
-- Control: Joystick UP/ Down to move the paddle, press Q to quit.
+- Control: Joystick UP/ Down to move the paddle, Tilt board to the right to make the ball faster on a collision when score is a multiple of 4, press Q to quit.
 - Load the second player on host:
 ```bash
+sudo apt install python3-venv
 cd server
 python3 -m venv venv
 source venv/bin/activate
 pip install -r requirements.txt
 python3 server.py
 ```
+- Control on server side: up/down arrow key, space bar for power up 
 
 # Performance:
 | Application    | FPS  |

@@ -22,7 +22,8 @@ void UDP_send(float p1_pos_x, float p1_pos_y,
               int p1_score, int p2_score);
 int UDP_recv(void);
 bool UDP_server_ready(void);
-
+bool UDP_is_accelerate(void);
+void UDP_set_accelerate(void);
 #ifdef __cplusplus
 }
 #endif

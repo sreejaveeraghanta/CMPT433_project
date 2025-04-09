@@ -9,6 +9,7 @@
 #include "sharedDataLayout.h"
 #include "rotary_statemachine.h"
 #include "hal/udp.h"
+#include "hal/accelerometer.h"
 
 Game::Game(int width, int height) : m_width(width), m_height(height)
 {
@@ -22,6 +23,7 @@ Game::Game(int width, int height) : m_width(width), m_height(height)
     // Init control
     Joystick_init();
     UDP_init();
+    Accelerometer_init();
 
     RotaryStateMachine_init();
 
@@ -69,6 +71,7 @@ Game::~Game()
 
     Joystick_deinit();
     UDP_deinit();
+    Accelerometer_deinit();
 
     // Cleans up sound
     sound_cleanup();
@@ -171,6 +174,19 @@ void Game::doCollision(Ball& ball, Paddle paddle)
         ball.Velocity.x *= -1; 
 
         sound_play_collision();
+        if (m_player1.Score % 4 == 0 && ball.Position.x < 110) {
+            // Accelerometer tilted to the right past 50% trigger ball acceleration for player 1
+            if (Accelerometer_get_y_axis() >= 4){
+                ball.Velocity.x *= 1.5; 
+            }
+        }
+
+        // trigger ball acceleration for player 2
+        if (ball.Position.x > 130 && m_player2.Score % 4 == 0 && (UDP_is_accelerate() == true)) {
+            ball.Velocity.x *= 1.5; 
+            // reset the acceleration boolean
+            UDP_set_accelerate();
+        }
 
         // Push ball out of the paddle
         if (distance.x > 0) 

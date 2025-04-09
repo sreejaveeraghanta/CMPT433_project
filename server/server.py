@@ -45,6 +45,7 @@ while running:
     message = message.decode()
     if message == "quit": 
         running = False
+        break
 
     positions = message.split(",")
 
@@ -57,6 +58,7 @@ while running:
     player2_score = font.render(str(positions[7]), True, (255, 255, 255))
     screen.blit(player1_score, (20, 10))
     screen.blit(player2_score, (SCREEN_WIDTH-40, 10))
+
 
 
     for event in pygame.event.get(): 
@@ -74,6 +76,9 @@ while running:
                 if  down_message_sent: 
                     client_socket.sendto("idle".encode(), server_address)
                 down_message_sent = False
+        if event.type == pygame.KEYDOWN: 
+            if event.key == pygame.K_SPACE: 
+                client_socket.sendto("accelerate".encode(), server_address)
 
     ## keyboard controls player2!
     keys = pygame.key.get_pressed()
