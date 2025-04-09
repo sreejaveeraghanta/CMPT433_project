@@ -176,7 +176,7 @@ void Game::doCollision(Ball& ball, Paddle paddle)
         sound_play_collision();
         if (m_player1.Score % 4 == 0 && ball.Position.x < 110) {
             // Accelerometer tilted to the right past 50% trigger ball acceleration for player 1
-            if (Accelerometer_get_y_axis() > 4){
+            if (Accelerometer_get_y_axis() >= 4){
                 ball.Velocity.x *= 1.5; 
             }
         }
