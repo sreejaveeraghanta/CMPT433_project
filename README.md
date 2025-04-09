@@ -53,6 +53,13 @@ The game was based on a tutorial from on [learnopengl.com](https://learnopengl.c
 ## pong:
 The multiplayer game we are trying to make.
 - Control: Joystick UP/ Down to move the paddle, press Q to quit.
+- Load the second player on host:
+```bash
+cd server
+python3 -m venv venv
+source venv/bin/activate
+python3 server.py
+```
 
 # Performance:
 | Application    | FPS  |
