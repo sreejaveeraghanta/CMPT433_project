@@ -45,7 +45,7 @@ static int Accelerometer_ReadZ(void) {
   assert(isInitialized); 
   return read_LH(Z_OUT_L, Z_OUT_H);
 }
-
+// Check for tilting on x_axis
 int Accelerometer_get_x_axis(void) {
   assert(isInitialized);
   int x = Accelerometer_ReadX();
@@ -59,6 +59,7 @@ int Accelerometer_get_x_axis(void) {
   return value;
 }
 
+// check for tilting on the y_axis
 int Accelerometer_get_y_axis(void) {
   assert(isInitialized);
   int value = 0;

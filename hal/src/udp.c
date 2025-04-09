@@ -1,5 +1,6 @@
 // This module is referenced from the class notes;
 // reads and responds to UDP packets through the 12345 port
+// Communications with a pyrhon server that controls the second player of our game
 #include "hal/udp.h"
 
 #include <stdio.h>
@@ -105,6 +106,7 @@ void UDP_deinit(void)
   printf("UDP deinited\n");
 }
 
+// send game information to server
 void UDP_send(float p1_pos_x, float p1_pos_y,
               float ball_pos_x, float ball_pos_y,
               float p2_pos_x, float p2_pos_y,
@@ -118,21 +120,25 @@ void UDP_send(float p1_pos_x, float p1_pos_y,
   sendto(socketDescriptor, message, strlen(message), 0, (struct sockaddr *)&sinRemote, sin_len);
 }
 
+// gets player 2's direction for movement
 int UDP_recv(void)
 {
   return player2_dir;
 }
 
+// confirms that player 2's server started
 bool UDP_server_ready(void)
 {
   return server_ready;
 }
 
+// get accelerate response from player 2
 bool UDP_is_accelerate(void) 
 {
   return accelerate;
 }
 
+// Reset Accelerate flag
 void UDP_set_accelerate(void) 
 {
   accelerate = false;
