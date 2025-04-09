@@ -404,6 +404,14 @@ void miss_animation(void)
 void shared_memory_init(void)
 {
     printf("Sharing memory with R5\n");
+    // Load the r5 for use
+    int result = system("sh ../../r5/load_r5_mcu.sh");
+    if (result == 0) {
+        printf("R5 started\n");
+    }
+    else {
+        printf("R5 in use");
+    }
 
     // Get access to shared memory for my uses
     pR5Base = getR5MmapAddr();

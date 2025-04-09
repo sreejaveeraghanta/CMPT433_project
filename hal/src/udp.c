@@ -19,6 +19,7 @@ static struct sockaddr_in sinRemote;
 static bool isInitialized;
 pthread_t listener_thread;
 static bool active;
+static bool server_ready = false;
 static bool terminated = false;
 static int player2_dir = 0;
 
@@ -38,6 +39,12 @@ static void *listener()
   {
     int bytes = recvfrom(socketDescriptor, message, MAX_LEN - 1, 0, (struct sockaddr *)&sinRemote, &sin_len);
     message[bytes] = '\0';
+    if (strcmp(message, "ready") == 0){
+      server_ready = true;
+    }
+    if (strcmp(message, "stop") == 0){
+      server_ready = false;
+    }
     if (strcmp(message, "up") == 0)
     {
       player2_dir = 1;
@@ -108,4 +115,9 @@ void UDP_send(float p1_pos_x, float p1_pos_y,
 int UDP_recv(void)
 {
   return player2_dir;
+}
+
+bool UDP_server_ready(void)
+{
+  return server_ready;
 }

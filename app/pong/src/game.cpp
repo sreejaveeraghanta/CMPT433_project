@@ -121,18 +121,22 @@ void Game::processInput(float dt)
 
 void Game::update(float dt)
 {
-    m_ball.move(dt, m_width, m_player1, m_player2);
-    m_player1.MyPaddle.move(dt, m_height);
-    m_player2.MyPaddle.move(dt, m_height);
+    bool connected = UDP_server_ready();
+    if (connected == true){
+        m_ball.move(dt, m_width, m_player1, m_player2);
+        m_player1.MyPaddle.move(dt, m_height);
+        m_player2.MyPaddle.move(dt, m_height);
 
-    // Updates the player on the server side
-    UDP_send(m_player1.MyPaddle.Position.x, m_player1.MyPaddle.Position.y, 
-            m_ball.Position.x, m_ball.Position.y, 
-            m_player2.MyPaddle.Position.x, m_player2.MyPaddle.Position.y, 
-            m_player1.Score, m_player2.Score);
+        // Updates the player on the server side
+        UDP_send(m_player1.MyPaddle.Position.x, m_player1.MyPaddle.Position.y, 
+                m_ball.Position.x, m_ball.Position.y, 
+                m_player2.MyPaddle.Position.x, m_player2.MyPaddle.Position.y, 
+                m_player1.Score, m_player2.Score);
 
-    doCollision(m_ball, m_player1.MyPaddle);
-    doCollision(m_ball, m_player2.MyPaddle);
+        doCollision(m_ball, m_player1.MyPaddle);
+        doCollision(m_ball, m_player2.MyPaddle);
+
+    }
 }
 
 void Game::render()
@@ -144,7 +148,6 @@ void Game::render()
     m_ball.draw(*m_spriteRenderer);
     m_player1.MyPaddle.draw(*m_spriteRenderer);
     m_player2.MyPaddle.draw(*m_spriteRenderer);
-
     // Draw UI
     m_uiRenderer->render(m_player1.Score, m_player2.Score);
 }

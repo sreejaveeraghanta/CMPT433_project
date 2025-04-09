@@ -38,9 +38,7 @@ running = True
 
 while running:
     screen.fill((0,0,0))
-    # switches players based on which side the ball is on
-
-    client_socket.sendto("requesting message".encode(), server_address)
+    client_socket.sendto("ready".encode(), server_address)
 
     message, server_address = client_socket.recvfrom(2048)
 
@@ -64,6 +62,7 @@ while running:
     for event in pygame.event.get(): 
         
         if event.type == pygame.QUIT: 
+            client_socket.sendto("stop".encode(), server_address)
             running = False
 
         if event.type == pygame.KEYUP: 
