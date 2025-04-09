@@ -58,6 +58,7 @@ The multiplayer game we are trying to make.
 cd server
 python3 -m venv venv
 source venv/bin/activate
+pip install -r requirements.txt
 python3 server.py
 ```
 
